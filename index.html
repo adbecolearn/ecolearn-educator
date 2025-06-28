@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EcoLearn Educator Portal - Dashboard untuk dosen dan pengajar digital business">
+    <meta name="keywords" content="ecolearn, educator portal, teaching dashboard, digital business">
+    <meta name="author" content="Akademi Digital Bandung">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    
+    <!-- Preconnect untuk performance -->
+    <link rel="preconnect" href="https://adbecolearn.github.io">
+    
+    <!-- Load EcoLearn Shared Styles -->
+    <link rel="stylesheet" href="https://adbecolearn.github.io/ecolearn-shared/styles/base/variables.css">
+    <link rel="stylesheet" href="https://adbecolearn.github.io/ecolearn-shared/styles/components/button.css">
+    
+    <!-- Local Styles -->
+    <link rel="stylesheet" href="assets/css/educator.css">
+    
+    <title>EcoLearn Educator Portal</title>
+    
+    <!-- Carbon tracking meta -->
+    <meta name="carbon-budget" content="0.5g">
+    <meta name="performance-target" content="2s">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <img src="assets/images/ecolearn-logo.svg" alt="EcoLearn" width="120" height="30">
+            </div>
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Initializing Educator Dashboard...</p>
+        </div>
+    </div>
+
+    <!-- Carbon Tracker Display -->
+    <div id="carbon-tracker" class="carbon-tracker">
+        <div class="carbon-status">
+            <span class="carbon-indicator"></span>
+            <span class="carbon-text">0.0g CO2</span>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container" style="display: none;">
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <div class="nav-left">
+                <img src="assets/images/ecolearn-logo.svg" alt="EcoLearn" class="nav-logo" width="100" height="25">
+                <div class="nav-divider"></div>
+                <h1 class="nav-title">Educator Portal</h1>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-link active" data-page="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="#students" class="nav-link" data-page="students">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">Students</span>
+                </a>
+                <a href="#courses" class="nav-link" data-page="courses">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">Courses</span>
+                </a>
+                <a href="#analytics" class="nav-link" data-page="analytics">
+                    <span class="nav-icon">📈</span>
+                    <span class="nav-text">Analytics</span>
+                </a>
+                <a href="#ai-insights" class="nav-link" data-page="ai-insights">
+                    <span class="nav-icon">🤖</span>
+                    <span class="nav-text">AI Insights</span>
+                </a>
+                <a href="#reports" class="nav-link" data-page="reports">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">Reports</span>
+                </a>
+            </nav>
+            
+            <div class="nav-right">
+                <div class="ai-status">
+                    <span class="ai-indicator" id="aiIndicator"></span>
+                    <span class="ai-text" id="aiStatus">AI Ready</span>
+                </div>
+                <button class="notifications-btn" id="notificationsBtn">
+                    <span class="notification-icon">🔔</span>
+                    <span class="notification-badge" id="notificationBadge">5</span>
+                </button>
+                <div class="user-menu">
+                    <button class="user-btn" id="userBtn">
+                        <div class="user-avatar">
+                            <span class="avatar-text" id="userInitials">DR</span>
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name" id="userName">Dr. Educator</span>
+                            <span class="user-role">Educator</span>
+                        </div>
+                        <span class="dropdown-icon">▼</span>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#profile" class="dropdown-item">
+                            <span class="item-icon">👤</span>
+                            <span class="item-text">Profile</span>
+                        </a>
+                        <a href="#settings" class="dropdown-item">
+                            <span class="item-icon">⚙️</span>
+                            <span class="item-text">Settings</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item logout-btn" id="logoutBtn">
+                            <span class="item-icon">🚪</span>
+                            <span class="item-text">Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="page-content active">
+                <div class="page-header">
+                    <div class="header-content">
+                        <h2 class="page-title">Dashboard Overview</h2>
+                        <p class="page-subtitle">Monitor student progress and AI learning effectiveness</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="action-btn secondary" id="exportDataBtn">
+                            <span class="btn-icon">📤</span>
+                            <span class="btn-text">Export Data</span>
+                        </button>
+                        <button class="action-btn primary" id="generateReportBtn">
+                            <span class="btn-icon">📊</span>
+                            <span class="btn-text">Generate Report</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Key Metrics -->
+                    <div class="dashboard-card metrics-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Key Metrics</h3>
+                            <div class="time-filter">
+                                <select class="filter-select" id="metricsTimeFilter">
+                                    <option value="week">This Week</option>
+                                    <option value="month">This Month</option>
+                                    <option value="semester">This Semester</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="metrics-grid">
+                                <div class="metric-item">
+                                    <div class="metric-icon">👥</div>
+                                    <div class="metric-content">
+                                        <span class="metric-value" id="totalStudents">300</span>
+                                        <span class="metric-label">Total Students</span>
+                                        <span class="metric-change positive">+12 this week</span>
+                                    </div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-icon">📚</div>
+                                    <div class="metric-content">
+                                        <span class="metric-value" id="activeCourses">6</span>
+                                        <span class="metric-label">Active Courses</span>
+                                        <span class="metric-change neutral">No change</span>
+                                    </div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-icon">🤖</div>
+                                    <div class="metric-content">
+                                        <span class="metric-value" id="aiInteractions">1,247</span>
+                                        <span class="metric-label">AI Interactions</span>
+                                        <span class="metric-change positive">+18% this week</span>
+                                    </div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-icon">📈</div>
+                                    <div class="metric-content">
+                                        <span class="metric-value" id="avgProgress">78%</span>
+                                        <span class="metric-label">Avg Progress</span>
+                                        <span class="metric-change positive">+5% this week</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Performance -->
+                    <div class="dashboard-card performance-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Student Performance</h3>
+                            <button class="view-all-btn" id="viewAllStudents">View All</button>
+                        </div>
+                        <div class="card-content">
+                            <div class="performance-chart">
+                                <div class="chart-placeholder">
+                                    <div class="chart-bars">
+                                        <div class="chart-bar" style="height: 85%">
+                                            <span class="bar-label">Digital Marketing</span>
+                                            <span class="bar-value">85%</span>
+                                        </div>
+                                        <div class="chart-bar" style="height: 72%">
+                                            <span class="bar-label">E-Commerce</span>
+                                            <span class="bar-value">72%</span>
+                                        </div>
+                                        <div class="chart-bar" style="height: 68%">
+                                            <span class="bar-label">Analytics</span>
+                                            <span class="bar-value">68%</span>
+                                        </div>
+                                        <div class="chart-bar" style="height: 91%">
+                                            <span class="bar-label">Strategy</span>
+                                            <span class="bar-value">91%</span>
+                                        </div>
+                                        <div class="chart-bar" style="height: 76%">
+                                            <span class="bar-label">Innovation</span>
+                                            <span class="bar-value">76%</span>
+                                        </div>
+                                        <div class="chart-bar" style="height: 83%">
+                                            <span class="bar-label">Leadership</span>
+                                            <span class="bar-value">83%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Model Performance -->
+                    <div class="dashboard-card ai-performance-card">
+                        <div class="card-header">
+                            <h3 class="card-title">AI Model Performance</h3>
+                            <div class="model-selector">
+                                <select class="model-select" id="aiModelSelect">
+                                    <option value="all">All Models</option>
+                                    <option value="gpt4">OpenAI GPT-4</option>
+                                    <option value="llama2">Local LLaMA 2</option>
+                                    <option value="hybrid">Hybrid Adaptive</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="ai-metrics">
+                                <div class="ai-metric">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Response Quality</span>
+                                        <span class="metric-score">4.7/5.0</span>
+                                    </div>
+                                    <div class="metric-bar">
+                                        <div class="metric-fill" style="width: 94%"></div>
+                                    </div>
+                                </div>
+                                <div class="ai-metric">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Learning Effectiveness</span>
+                                        <span class="metric-score">89%</span>
+                                    </div>
+                                    <div class="metric-bar">
+                                        <div class="metric-fill" style="width: 89%"></div>
+                                    </div>
+                                </div>
+                                <div class="ai-metric">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Student Engagement</span>
+                                        <span class="metric-score">92%</span>
+                                    </div>
+                                    <div class="metric-bar">
+                                        <div class="metric-fill" style="width: 92%"></div>
+                                    </div>
+                                </div>
+                                <div class="ai-metric">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Carbon Efficiency</span>
+                                        <span class="metric-score">0.31g CO2</span>
+                                    </div>
+                                    <div class="metric-bar">
+                                        <div class="metric-fill green" style="width: 76%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="dashboard-card activity-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Activity</h3>
+                            <button class="refresh-btn" id="refreshActivity">
+                                <span class="refresh-icon">🔄</span>
+                            </button>
+                        </div>
+                        <div class="card-content">
+                            <div class="activity-list" id="activityList">
+                                <div class="activity-item">
+                                    <div class="activity-avatar">
+                                        <span class="avatar-text">JS</span>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p class="activity-text">
+                                            <strong>John Student</strong> completed Digital Marketing quiz with 95% score
+                                        </p>
+                                        <span class="activity-time">2 minutes ago</span>
+                                    </div>
+                                    <div class="activity-badge success">Excellent</div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-avatar ai">
+                                        <span class="avatar-text">AI</span>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p class="activity-text">
+                                            AI provided personalized learning path for <strong>Maria Santos</strong>
+                                        </p>
+                                        <span class="activity-time">5 minutes ago</span>
+                                    </div>
+                                    <div class="activity-badge ai">AI Insight</div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-avatar">
+                                        <span class="avatar-text">AS</span>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p class="activity-text">
+                                            <strong>Ahmad Syahrul</strong> submitted E-commerce project assignment
+                                        </p>
+                                        <span class="activity-time">12 minutes ago</span>
+                                    </div>
+                                    <div class="activity-badge pending">Review Needed</div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-avatar">
+                                        <span class="avatar-text">RP</span>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p class="activity-text">
+                                            <strong>Rina Pratiwi</strong> achieved 7-day learning streak milestone
+                                        </p>
+                                        <span class="activity-time">18 minutes ago</span>
+                                    </div>
+                                    <div class="activity-badge milestone">Milestone</div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-avatar ai">
+                                        <span class="avatar-text">AI</span>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p class="activity-text">
+                                            Weekly AI performance report generated for all courses
+                                        </p>
+                                        <span class="activity-time">25 minutes ago</span>
+                                    </div>
+                                    <div class="activity-badge report">Report</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carbon Impact -->
+                    <div class="dashboard-card carbon-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Carbon Impact</h3>
+                            <div class="carbon-badge eco">
+                                <span class="badge-icon">🌱</span>
+                                <span class="badge-text">Green Teaching</span>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="carbon-overview">
+                                <div class="carbon-stat">
+                                    <span class="stat-value" id="totalCarbonSaved">127.3g</span>
+                                    <span class="stat-label">CO2 Saved This Week</span>
+                                </div>
+                                <div class="carbon-comparison">
+                                    <div class="comparison-item">
+                                        <span class="comparison-label">vs Traditional Learning</span>
+                                        <span class="comparison-value">-68% CO2</span>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <span class="comparison-label">Energy Efficiency</span>
+                                        <span class="comparison-value">94% Optimized</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carbon-breakdown">
+                                <h4 class="breakdown-title">Carbon Breakdown by AI Model</h4>
+                                <div class="breakdown-list">
+                                    <div class="breakdown-item">
+                                        <span class="model-name">Local LLaMA 2</span>
+                                        <div class="carbon-bar">
+                                            <div class="carbon-fill" style="width: 25%"></div>
+                                        </div>
+                                        <span class="carbon-amount">0.12g</span>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <span class="model-name">OpenAI GPT-4</span>
+                                        <div class="carbon-bar">
+                                            <div class="carbon-fill" style="width: 45%"></div>
+                                        </div>
+                                        <span class="carbon-amount">0.23g</span>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <span class="model-name">Hybrid Adaptive</span>
+                                        <div class="carbon-bar">
+                                            <div class="carbon-fill" style="width: 30%"></div>
+                                        </div>
+                                        <span class="carbon-amount">0.15g</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="dashboard-card actions-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Quick Actions</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="actions-grid">
+                                <button class="action-item" id="createAssignmentBtn">
+                                    <div class="action-icon">📝</div>
+                                    <div class="action-content">
+                                        <span class="action-title">Create Assignment</span>
+                                        <span class="action-desc">New assignment with AI assistance</span>
+                                    </div>
+                                </button>
+                                <button class="action-item" id="reviewSubmissionsBtn">
+                                    <div class="action-icon">📋</div>
+                                    <div class="action-content">
+                                        <span class="action-title">Review Submissions</span>
+                                        <span class="action-desc">12 pending reviews</span>
+                                    </div>
+                                </button>
+                                <button class="action-item" id="scheduleClassBtn">
+                                    <div class="action-icon">📅</div>
+                                    <div class="action-content">
+                                        <span class="action-title">Schedule Class</span>
+                                        <span class="action-desc">Plan next session</span>
+                                    </div>
+                                </button>
+                                <button class="action-item" id="aiInsightsBtn">
+                                    <div class="action-icon">🤖</div>
+                                    <div class="action-content">
+                                        <span class="action-title">AI Insights</span>
+                                        <span class="action-desc">View learning analytics</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other pages will be loaded dynamically -->
+            <div id="students-page" class="page-content">
+                <div class="page-placeholder">
+                    <h2>Student Management</h2>
+                    <p>Student progress tracking and management interface coming soon...</p>
+                </div>
+            </div>
+
+            <div id="courses-page" class="page-content">
+                <div class="page-placeholder">
+                    <h2>Course Management</h2>
+                    <p>Course creation and management interface coming soon...</p>
+                </div>
+            </div>
+
+            <div id="analytics-page" class="page-content">
+                <div class="page-placeholder">
+                    <h2>Learning Analytics</h2>
+                    <p>Advanced analytics and insights interface coming soon...</p>
+                </div>
+            </div>
+
+            <div id="ai-insights-page" class="page-content">
+                <div class="page-placeholder">
+                    <h2>AI Insights</h2>
+                    <p>AI-powered teaching insights and recommendations coming soon...</p>
+                </div>
+            </div>
+
+            <div id="reports-page" class="page-content">
+                <div class="page-placeholder">
+                    <h2>Reports & Analytics</h2>
+                    <p>Comprehensive reporting interface coming soon...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Load EcoLearn Shared Libraries -->
+    <script type="module" src="assets/js/educator.js"></script>
+</body>
+</html>

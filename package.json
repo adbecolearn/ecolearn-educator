@@ -1,0 +1,62 @@
+{
+  "name": "ecolearn-educator",
+  "version": "1.0.0",
+  "description": "EcoLearn Educator Portal",
+  "type": "module",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 8004",
+    "build": "node scripts/build.js",
+    "test": "node scripts/test.js",
+    "lint": "eslint assets/js --ext .js",
+    "format": "prettier --write .",
+    "validate": "node scripts/validate.js",
+    "carbon-check": "node scripts/carbon-check.js",
+    "deploy": "node scripts/deploy.js"
+  },
+  "keywords": [
+    "ecolearn",
+    "educator",
+    "portal",
+    "teaching-dashboard",
+    "micro-frontend"
+  ],
+  "author": {
+    "name": "Akademi Digital Bandung",
+    "email": "dev@digitalbdg.ac.id",
+    "url": "https://digitalbdg.ac.id"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adbecolearn/ecolearn-educator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adbecolearn/ecolearn-educator/issues"
+  },
+  "homepage": "https://adbecolearn.github.io/ecolearn-educator/",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "terser": "^5.0.0",
+    "cssnano": "^6.0.0",
+    "postcss": "^8.0.0",
+    "autoprefixer": "^10.0.0"
+  },
+  "dependencies": {
+    "ecolearn-shared": "https://adbecolearn.github.io/ecolearn-shared/"
+  },
+  "files": [
+    "index.html",
+    "assets/"
+  ]
+}
