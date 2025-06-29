@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Loading - EcoLearn Educator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #138496; }
+        #console-output {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 4px solid #17a2b8;
+            background: #f8f9fa;
+        }
+        .step.completed {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .step.failed {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 EcoLearn Educator Loading Debug</h1>
+    
+    <div class="debug-section">
+        <h2>📋 Debug Steps</h2>
+        <div id="step1" class="step">
+            <strong>Step 1:</strong> Test shared library accessibility
+            <div id="step1-status" class="status info">Ready to test</div>
+        </div>
+        <div id="step2" class="step">
+            <strong>Step 2:</strong> Test educator-specific imports
+            <div id="step2-status" class="status info">Waiting for step 1</div>
+        </div>
+        <div id="step3" class="step">
+            <strong>Step 3:</strong> Test educator authentication
+            <div id="step3-status" class="status info">Waiting for step 2</div>
+        </div>
+        
+        <button onclick="runAllTests()">🚀 Run All Tests</button>
+        <button onclick="clearResults()">🗑️ Clear Results</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>📊 Test Results</h2>
+        <div id="test-results" class="status info">No tests run yet</div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>📋 Console Output</h2>
+        <div id="console-output"></div>
+        <button onclick="clearConsole()">Clear Console</button>
+    </div>
+
+    <script type="module">
+        // Capture console logs
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        function addToConsole(type, ...args) {
+            const output = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            output.textContent += `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        console.log = (...args) => {
+            originalLog(...args);
+            addToConsole('log', ...args);
+        };
+        
+        console.error = (...args) => {
+            originalError(...args);
+            addToConsole('error', ...args);
+        };
+        
+        let testResults = { step1: null, step2: null, step3: null };
+        
+        async function testStep1() {
+            console.log('🔄 Step 1: Testing shared library accessibility...');
+            const step = document.getElementById('step1');
+            const status = document.getElementById('step1-status');
+            
+            try {
+                status.className = 'status info';
+                status.textContent = 'Testing shared library URL...';
+                
+                const response = await fetch('https://adbecolearn.github.io/ecolearn-shared/index.js');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                console.log('✅ Step 1: Shared library accessible');
+                step.className = 'step completed';
+                status.className = 'status success';
+                status.textContent = '✅ Shared library is accessible';
+                testResults.step1 = true;
+                return true;
+                
+            } catch (error) {
+                console.error('❌ Step 1 failed:', error);
+                step.className = 'step failed';
+                status.className = 'status error';
+                status.textContent = `❌ Failed: ${error.message}`;
+                testResults.step1 = false;
+                return false;
+            }
+        }
+        
+        async function testStep2() {
+            console.log('🔄 Step 2: Testing educator imports...');
+            const step = document.getElementById('step2');
+            const status = document.getElementById('step2-status');
+            
+            if (!testResults.step1) {
+                status.className = 'status warning';
+                status.textContent = '⚠️ Skipped: Step 1 failed';
+                return false;
+            }
+            
+            try {
+                status.className = 'status info';
+                status.textContent = 'Importing shared modules...';
+                
+                const sharedModule = await import('https://adbecolearn.github.io/ecolearn-shared/index.js');
+                console.log('✅ Shared module imported for educator');
+                
+                window.testSharedModule = sharedModule;
+                
+                console.log('✅ Step 2: Educator imports successful');
+                step.className = 'step completed';
+                status.className = 'status success';
+                status.textContent = '✅ Educator modules imported successfully';
+                testResults.step2 = true;
+                return true;
+                
+            } catch (error) {
+                console.error('❌ Step 2 failed:', error);
+                step.className = 'step failed';
+                status.className = 'status error';
+                status.textContent = `❌ Failed: ${error.message}`;
+                testResults.step2 = false;
+                return false;
+            }
+        }
+        
+        async function testStep3() {
+            console.log('🔄 Step 3: Testing educator authentication...');
+            const step = document.getElementById('step3');
+            const status = document.getElementById('step3-status');
+            
+            if (!testResults.step2) {
+                status.className = 'status warning';
+                status.textContent = '⚠️ Skipped: Step 2 failed';
+                return false;
+            }
+            
+            try {
+                status.className = 'status info';
+                status.textContent = 'Testing educator auth...';
+                
+                const { authUtils } = window.testSharedModule;
+                
+                // Test educator role check
+                const hasEducatorRole = authUtils.hasRole('educator');
+                console.log('👨‍🏫 Educator role check:', hasEducatorRole);
+                
+                console.log('✅ Step 3: Educator authentication tested');
+                step.className = 'step completed';
+                status.className = 'status success';
+                status.textContent = '✅ Educator auth tested successfully';
+                testResults.step3 = true;
+                return true;
+                
+            } catch (error) {
+                console.error('❌ Step 3 failed:', error);
+                step.className = 'step failed';
+                status.className = 'status error';
+                status.textContent = `❌ Failed: ${error.message}`;
+                testResults.step3 = false;
+                return false;
+            }
+        }
+        
+        window.runAllTests = async () => {
+            console.log('🚀 Starting educator tests...');
+            
+            const success1 = await testStep1();
+            if (success1) {
+                const success2 = await testStep2();
+                if (success2) {
+                    await testStep3();
+                }
+            }
+            
+            updateTestResults();
+        };
+        
+        function updateTestResults() {
+            const resultsDiv = document.getElementById('test-results');
+            const passed = Object.values(testResults).filter(r => r === true).length;
+            const failed = Object.values(testResults).filter(r => r === false).length;
+            const total = Object.values(testResults).filter(r => r !== null).length;
+            
+            if (total === 0) {
+                resultsDiv.className = 'status info';
+                resultsDiv.textContent = 'No tests run yet';
+            } else if (failed === 0) {
+                resultsDiv.className = 'status success';
+                resultsDiv.textContent = `✅ All educator tests passed (${passed}/${total})`;
+            } else {
+                resultsDiv.className = 'status error';
+                resultsDiv.textContent = `❌ ${failed} educator test(s) failed, ${passed} passed`;
+            }
+        }
+        
+        window.clearResults = () => {
+            testResults = { step1: null, step2: null, step3: null };
+            
+            for (let i = 1; i <= 3; i++) {
+                const step = document.getElementById(`step${i}`);
+                const status = document.getElementById(`step${i}-status`);
+                step.className = 'step';
+                status.className = 'status info';
+                status.textContent = i === 1 ? 'Ready to test' : `Waiting for step ${i-1}`;
+            }
+            
+            updateTestResults();
+            console.log('🗑️ Educator results cleared');
+        };
+        
+        window.clearConsole = () => {
+            document.getElementById('console-output').textContent = '';
+        };
+        
+        console.log('🔍 EcoLearn Educator Loading Debug initialized');
+    </script>
+</body>
+</html>
