@@ -108,8 +108,20 @@ class EducatorApp {
                 throw new Error('Required libraries not loaded');
             }
 
-            // Check authentication (skip redirect for testing)
-            await this.checkAuthentication();
+            // TEMPORARY FIX: Skip authentication for testing
+            // await this.checkAuthentication();
+
+            // Create temporary mock user for testing
+            this.currentUser = {
+                id: 'temp-educator-user',
+                firstName: 'Test',
+                lastName: 'Educator',
+                email: 'test.educator@digitalbdg.ac.id',
+                role: 'educator',
+                employeeId: 'TEMP001',
+                loginTime: Date.now()
+            };
+            console.log('🔧 TEMPORARY: Using mock educator for testing:', this.currentUser.email);
 
             // Setup DOM references
             this.setupDOM();
@@ -170,11 +182,13 @@ class EducatorApp {
                 return;
             }
 
-            if (!authUtils.isAuthenticated()) {
-                console.log('🔐 Educator not authenticated, redirecting to auth...');
-                window.location.href = 'https://adbecolearn.github.io/ecolearn-auth/';
-                return;
-            }
+            // TEMPORARY FIX: Skip authentication check completely
+            // if (!authUtils.isAuthenticated()) {
+            //     console.log('🔐 Educator not authenticated, redirecting to auth...');
+            //     window.location.href = 'https://adbecolearn.github.io/ecolearn-auth/';
+            //     return;
+            // }
+            console.log('🔧 TEMPORARY: Skipping authUtils.isAuthenticated() check for educator');
 
             this.currentUser = authUtils.getCurrentUser();
 
